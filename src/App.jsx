@@ -67,10 +67,9 @@ function App() {
         <Route
           path="/"
           element={
-            <UniversalLayout containerClass="min-h-screen">
-              <Layout>
-                <Home />
-              </Layout>
+            <UniversalLayout containerClass="min-h-screen py-8"
+              contentClass="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <SearchFlights />
             </UniversalLayout>
           }
         />
