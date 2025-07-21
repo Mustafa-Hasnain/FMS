@@ -81,7 +81,7 @@ const AdminNavigation = ({
         <div className="flex items-center space-x-8">
           <div className="flex items-center space-x-2">
             <Plane className="h-6 w-6 text-[#CDFF00]" />
-            <span className="text-xl font-medium font-orbitron text-[#CDFF00]">Jetrique Admin</span>
+            <span className="text-xl font-medium font-orbitron text-[#CDFF00]">Jetrique {isAdmin && "Admin"}</span>
           </div>
 
           {showBackButton && (
@@ -96,20 +96,20 @@ const AdminNavigation = ({
         </div>
 
         {/* Middle Section - Navigation Links */}
-        <div className="hidden md:flex items-center space-x-8">
+        {isAdmin && <div className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
             <button
               key={link.path}
               onClick={() => handleNavigation(link.path)}
               className={`text-sm font-medium transition-colors hover:text-[#CDFF00] ${link.isActive
-                  ? 'text-[#CDFF00] border-b-2 border-[#CDFF00] pb-1'
-                  : 'text-gray-300'
+                ? 'text-[#CDFF00] border-b-2 border-[#CDFF00] pb-1'
+                : 'text-gray-300'
                 }`}
             >
               {link.label}
             </button>
           ))}
-        </div>
+        </div>}
 
         {/* Right Section - Profile Menu */}
         {loading ? (
@@ -196,6 +196,15 @@ const AdminNavigation = ({
               )}
             </div>
           )}
+
+        {!loading && !user &&
+          <button
+            onClick={() => navigate("/login")}
+            className="flex items-center space-x-2 border-[1px] border-solid border-[#CDFF00] text-white px-4 py-2 rounded-md hover:bg-[#CDFF00] hover:text-black transition-all font-medium"
+          >
+            <span>Login</span>
+          </button>
+        }
       </div>
 
       {/* Mobile Navigation Links */}
@@ -205,8 +214,8 @@ const AdminNavigation = ({
             key={link.path}
             onClick={() => handleNavigation(link.path)}
             className={`text-sm font-medium transition-colors hover:text-[#CDFF00] whitespace-nowrap ${link.isActive
-                ? 'text-[#CDFF00] border-b-2 border-[#CDFF00] pb-1'
-                : 'text-gray-300'
+              ? 'text-[#CDFF00] border-b-2 border-[#CDFF00] pb-1'
+              : 'text-gray-300'
               }`}
           >
             {link.label}

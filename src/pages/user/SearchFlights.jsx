@@ -150,23 +150,13 @@ const SearchFlights = () => {
   return (
     <div className="bg-black/80 backdrop-blur-sm rounded-2xl min-h-screen text-white items-center justify-center">
       {/* Header Navigation */}
-      {
-        isAdmin ? (
-          <AdminNavigation
-            showBackButton={false}
-          />
-        )
-          :
-          <div className="border-b border-gray-800 px-6 py-4">
-            <div className="flex items-center justify-between max-w-7xl mx-auto">
-              <div className="flex items-center space-x-8">
-                <div className="flex items-center space-x-2">
-                  <Plane className="h-6 w-6 text-[#CDFF00]" />
-                  <span className="text-xl font-medium font-orbitron text-[#CDFF00]">Jetrique</span>
-                </div>
-              </div>
-            </div>
-          </div>}
+
+
+      <AdminNavigation
+        showBackButton={false}
+        isAdmin={isAdmin}
+      />
+
 
       {/* Search Form */}
       <div className="px-6 py-8 text-white">

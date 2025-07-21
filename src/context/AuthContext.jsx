@@ -11,7 +11,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState({sub: 'admin@gmail.com', Name: 'Admin'});
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   console.log("User: ", user);
