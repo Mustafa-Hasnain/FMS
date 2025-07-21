@@ -1,73 +1,76 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { users } from '../data/users';
+import { decodeToken } from '../utils/jwtUtil';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({sub: 'admin@gmail.com', Name: 'Admin'});
   const [loading, setLoading] = useState(true);
 
+  console.log("User: ", user);
+
+  // Load user from token on first load
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = decodeToken(token);
+      if (decoded) {
+        setUser(decoded);
+      } else {
+        localStorage.removeItem('token'); // invalid token
+      }
     }
     setLoading(false);
   }, []);
 
-  const login = (email, password) => {
-    const foundUser = users.find(u => u.email === email && u.password === password);
-    if (foundUser) {
-      const userWithoutPassword = { ...foundUser };
-      delete userWithoutPassword.password;
-      setUser(userWithoutPassword);
-      localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-      return { success: true };
+  const login = (token) => {
+    localStorage.setItem('token', token);
+    const decoded = decodeToken(token);
+    if (decoded) {
+      setUser(decoded);
     }
-    return { success: false, error: 'Invalid email or password' };
-  };
-
-  const signup = (userData) => {
-    const existingUser = users.find(u => u.email === userData.email);
-    if (existingUser) {
-      return { success: false, error: 'User already exists' };
-    }
-    
-    const newUser = {
-      id: Date.now(),
-      ...userData,
-      role: 'user',
-      createdAt: new Date().toISOString()
-    };
-    
-    users.push(newUser);
-    const userWithoutPassword = { ...newUser };
-    delete userWithoutPassword.password;
-    setUser(userWithoutPassword);
-    localStorage.setItem('user', JSON.stringify(userWithoutPassword));
-    return { success: true };
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
     setUser(null);
-    localStorage.removeItem('user');
   };
 
-  const value = {
-    user,
-    login,
-    signup,
-    logout,
-    loading
+  const getUserDetails = () => {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    return decodeToken(token);
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const updateUserDetails = (newDetails) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    const decoded = decodeToken(token);
+    const updated = { ...decoded, ...newDetails };
+
+    // This part assumes you're not validating the JWT signature again.
+    // Only works safely for local updates (e.g., UI-based info)
+    setUser(updated);
+  };
+
+  return (
+    <AuthContext.Provider value={{
+      user,
+      login,
+      logout,
+      getUserDetails,
+      updateUserDetails,
+      loading,
+    }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };

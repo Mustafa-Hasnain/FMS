@@ -104,7 +104,7 @@ const Aircrafts = () => {
                             <p className="text-gray-400">Manage your fleet of aircrafts</p>
                         </div>
                         <CustomButton
-                            className='min-w-fit w-[17%]'
+                            className='min-w-fit max-w-[17%]'
                             text={
                                 <div className="flex items-center space-x-2">
                                     <Plus className="h-4 w-4" />

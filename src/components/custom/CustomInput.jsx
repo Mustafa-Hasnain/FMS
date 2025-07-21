@@ -65,7 +65,7 @@ const CustomInput = forwardRef(({
             ${Icon ? 'pl-10' : 'pl-4'} 
             ${RightIcon ? 'pr-12' : 'pr-4'} 
             py-3 
-            bg-gray-800/50 
+            bg-gray-800/50
             border 
             ${error ? 'border-red-500' : 'border-gray-700'} 
             rounded-lg 
@@ -79,6 +79,7 @@ const CustomInput = forwardRef(({
             font-inter
             disabled:opacity-50 
             disabled:cursor-not-allowed
+            !z-0
             ${inputClassName}
           `}
           {...props}

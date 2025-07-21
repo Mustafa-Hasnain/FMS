@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
 import { Mail, Lock, Eye, EyeOff, Plane } from 'lucide-react';
 import toast from 'react-hot-toast';
 import CustomInput from '../../components/custom/CustomInput';
 import CustomButton from '../../components/custom/CustomButton';
+import { url } from '../../utils/url';
+import { decodeToken } from '../../utils/jwtUtil';
+import { useAuth } from '../../context/AuthContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,34 +15,43 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const {login} = useAuth();
 
   const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
-    // try {
-    //   const result = login(formData.email, formData.password);
-    //   if (result.success) {
-    //     toast.success('Welcome back!');
-    //     navigate(from, { replace: true });
-    //   } else {
-    //     toast.error(result.error);
-    //   }
-    // } catch (error) {
-    //   toast.error('Something went wrong. Please try again.');
-    // } finally {
-    //   setLoading(false);
-    // }
-    if(formData.email == 'admin' && formData.password == 'admin'){
-      navigate("/admin/search");
-    }
-    else{
-      navigate("/search");
+    try {
+      const response = await fetch(`${url}/Auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      const result = await response.json();
+      console.log("Response: ", result);
+      if (result?.success) {
+        login(result.data.token);
+        toast.success('Login successful!');
+        const body = decodeToken(result.data.token);
+        console.log("body: ", body);
+        if (formData.email === 'admin' || body?.isAdmin === 'True') {
+          navigate('/admin/search', { replace: true });
+        } else {
+          navigate('/search', { replace: true });
+        }
+      } else {
+        toast.error(result.message || 'Login failed');
+      }
+    } catch (err) {
+      console.error("Error: ", err);
+      toast.error(err?.response?.data?.message || 'Something went wrong!');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,6 +61,7 @@ const Login = () => {
       [e.target.name]: e.target.value
     });
   };
+
 
   return (
     <>

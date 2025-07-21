@@ -154,12 +154,6 @@ const SearchFlights = () => {
         isAdmin ? (
           <AdminNavigation
             showBackButton={false}
-            onBackClick={() => navigate('/admin/aircrafts')}
-            userInfo={{
-              name: "Admin User",
-              email: "admin@jetrique.com",
-              avatar: null // You can pass a URL here if available
-            }}
           />
         )
           :
@@ -178,7 +172,7 @@ const SearchFlights = () => {
       <div className="px-6 py-8 text-white">
         <div className="max-w-7xl mx-auto">
           {/* Tab navigation */}
-          <div className="flex border border-[#CDFF00] rounded-md overflow-hidden mb-6">
+          {!isAdmin && <div className="flex border border-[#CDFF00] rounded-md overflow-hidden mb-6">
             <div className="flex-1 px-4 py-3 bg-black border-r border-[#CDFF00] flex items-center space-x-2 text-[#CDFF00]">
               <Search className="h-4 w-4" />
               <span className="text-sm font-semibold">Search flights</span>
@@ -195,7 +189,7 @@ const SearchFlights = () => {
               <MapPin className="h-4 w-4" />
               <span className="text-sm">Flight status</span>
             </div>
-          </div>
+          </div>}
 
           <form onSubmit={handleSearch} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
             {/* Row 1: Departure & Arrival */}

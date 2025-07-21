@@ -5,6 +5,7 @@ import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
 import toast from 'react-hot-toast';
 import CustomInput from '../../components/custom/CustomInput';
 import CustomButton from '../../components/custom/CustomButton';
+import { url } from '../../utils/url';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -100,37 +101,49 @@ const Signup = () => {
     e.preventDefault();
     setLoading(true);
 
-    // try {
-      // Clear previous errors
-      setErrors({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
+    // Clear previous errors
+    setErrors({
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: ''
+    });
+
+    // Validate form
+    if (!validateForm()) {
+      toast.error('Please resolve the issues and try again');
+      setLoading(false);
+      return;
+    }
+
+    const payload = {
+      name: formData.username,
+      email: formData.email,
+      password: formData.password,
+    };
+
+    try {
+      const response = await fetch(`${url}/Auth/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload)
       });
+      const result = await response.json();
 
-      // Validate form
-      if (!validateForm()) {
-        toast.error('Please resolve the issues and try again');
-        setLoading(false);
-        return;
+      if (result.success) {
+        toast.success('Account created successfully! Welcome to Jetique.');
+        navigate('/login');
+      } else {
+        toast.error(result.message || 'Signup failed');
       }
-
-    //   // All validations passed, proceed with signup
-    //   const result = signup(formData.username, formData.email, formData.password);
-    //   if (result.success) {
-    //     toast.success('Account created successfully! Welcome to Jetique!');
-    //     navigate(from, { replace: true });
-    //   } else {
-    //     toast.error('Error occurred. Please try again.');
-    //   }
-    // } catch (error) {
-    //   toast.error('Error occurred. Please try again.');
-    // } finally {
-    //   setLoading(false);
-    // }
-
-    navigate("/login");
+    } catch (err) {
+      const errorMessage = err?.response?.data?.message || 'Something went wrong during signup.';
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {

@@ -11,9 +11,11 @@ import "./style/app.css"
 import AdminFlightManagement from './pages/admin/AdminFlightManagement';
 import AircraftManagement from './pages/admin/AircraftManagement';
 import Aircrafts from './pages/admin/Aircrafts';
+import useAuthRedirect from './hooks/useAuthRedirect';
 
 // Universal Layout component that wraps all screens
 const UniversalLayout = ({ children, containerClass = "", contentClass = "" }) => {
+  useAuthRedirect();
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed relative"
