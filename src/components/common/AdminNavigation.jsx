@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { isAdminRoute } from '../../utils/routeUtil';
 
 const AdminNavigation = ({
-  showBackButton = false,
+  showBackButton = true,
   backButtonText = "Back",
   onBackClick = null,
 }) => {
@@ -80,13 +80,13 @@ const AdminNavigation = ({
 
         {/* Left Section - Logo and Back Button */}
         <div className="flex items-center space-x-8">
-          <button
+         {showBackButton && <button
             onClick={()=>navigate(-1)}
             className="flex items-center space-x-2 text-gray-400 hover:text-[#CDFF00] transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
             {/* <span>{backButtonText}</span> */}
-          </button>
+          </button>}
           <div className="flex items-center space-x-2">
             <Plane className="h-6 w-6 text-[#CDFF00]" />
             <span onClick={()=>navigate(isAdmin ? "/admin/search" : "/search")} className="text-xl font-medium font-orbitron text-[#CDFF00] cursor-pointer">Jetrique {isAdmin && "Admin"}</span>

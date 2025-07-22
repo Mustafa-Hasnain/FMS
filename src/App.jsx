@@ -69,11 +69,9 @@ function App() {
         <Route
           path="/"
           element={
-            <UniversalLayout
-              containerClass="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
-              contentClass="w-full max-w-md sm:max-w-lg md:max-w-[70%]"
-            >
-              <Login />
+            <UniversalLayout containerClass="min-h-screen py-8"
+              contentClass="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <SearchFlights />
             </UniversalLayout>
           }
         />

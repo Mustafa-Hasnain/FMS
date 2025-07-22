@@ -153,7 +153,7 @@ const SearchFlights = () => {
 
 
       <AdminNavigation
-        showBackButton={false}
+        showBackButton={isAdmin}
       />
 
 
