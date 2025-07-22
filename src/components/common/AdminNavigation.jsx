@@ -89,7 +89,7 @@ const AdminNavigation = ({
           </button>
           <div className="flex items-center space-x-2">
             <Plane className="h-6 w-6 text-[#CDFF00]" />
-            <span className="text-xl font-medium font-orbitron text-[#CDFF00]">Jetrique {isAdmin && "Admin"}</span>
+            <span onClick={()=>navigate(isAdmin ? "/admin/search" : "/search")} className="text-xl font-medium font-orbitron text-[#CDFF00] cursor-pointer">Jetrique {isAdmin && "Admin"}</span>
           </div>
 
         </div>

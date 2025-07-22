@@ -70,7 +70,7 @@ const Login = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="heading mb-2">
-            Welcome to Jetique
+            Welcome to Jetrique
           </h1>
           <p className="sub-heading">
             Log in to your account

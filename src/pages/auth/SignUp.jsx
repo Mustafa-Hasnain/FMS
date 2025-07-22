@@ -172,7 +172,7 @@ const Signup = () => {
             Create Account
           </h1>
           <p className="sub-heading">
-            Join Jetique and start your journey
+            Join Jetrique and start your journey
           </p>
         </div>
 
