@@ -183,7 +183,7 @@ const SearchFlights = () => {
           <form onSubmit={handleSearch} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
             {/* Row 1: Departure & Arrival */}
             <div className="mb-4">
-              <CustomButton
+              {isAdmin && <CustomButton
                 text={
                   <div className="flex items-center justify-center gap-2">
                     <Plane size={18} />
@@ -192,7 +192,7 @@ const SearchFlights = () => {
                 }
                 onClick={() => navigate('/admin/flight-management/')} // adjust route as needed
                 className="w-full"
-              />
+              />}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <CustomInput
