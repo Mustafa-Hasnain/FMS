@@ -117,6 +117,16 @@ function App() {
         />
 
         <Route
+          path="/aircraft-management/:id?"
+          element={
+            <UniversalLayout containerClass="min-h-screen py-8"
+              contentClass="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <AircraftManagement />
+            </UniversalLayout>
+          }
+        />
+
+        <Route
           path="/admin/aircrafts"
           element={
             <UniversalLayout containerClass="min-h-screen py-8"
