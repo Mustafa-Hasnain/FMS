@@ -2,18 +2,19 @@ import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Plane, ArrowLeft, User, LogOut, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { isAdminRoute } from '../../utils/routeUtil';
 
 const AdminNavigation = ({
   showBackButton = false,
   backButtonText = "Back",
   onBackClick = null,
-  isAdmin = false
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const profileMenuRef = useRef(null);
   const { logout, user, loading } = useAuth();
+  const isAdmin = isAdminRoute(location.pathname);
 
   // Navigation links
   const navLinks = useMemo(() => [
@@ -79,20 +80,18 @@ const AdminNavigation = ({
 
         {/* Left Section - Logo and Back Button */}
         <div className="flex items-center space-x-8">
+          <button
+            onClick={()=>navigate(-1)}
+            className="flex items-center space-x-2 text-gray-400 hover:text-[#CDFF00] transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+            {/* <span>{backButtonText}</span> */}
+          </button>
           <div className="flex items-center space-x-2">
             <Plane className="h-6 w-6 text-[#CDFF00]" />
             <span className="text-xl font-medium font-orbitron text-[#CDFF00]">Jetrique {isAdmin && "Admin"}</span>
           </div>
 
-          {showBackButton && (
-            <button
-              onClick={handleBackClick}
-              className="flex items-center space-x-2 text-gray-400 hover:text-[#CDFF00] transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5" />
-              <span>{backButtonText}</span>
-            </button>
-          )}
         </div>
 
         {/* Middle Section - Navigation Links */}
@@ -116,7 +115,7 @@ const AdminNavigation = ({
           <div className="w-8 h-8 rounded-full bg-gray-800 animate-pulse" />
         ) :
           user && (
-            <div className="relative" ref={profileMenuRef}>
+            <div className="relative z-50" ref={profileMenuRef}>
               <button
                 onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                 className="flex items-center space-x-3 text-gray-300 hover:text-[#CDFF00] transition-colors group"
@@ -148,7 +147,7 @@ const AdminNavigation = ({
 
               {/* Profile Dropdown Menu */}
               {isProfileMenuOpen && (
-                <div className="!z-50 absolute right-0 mt-2 w-64 bg-gray-900 border border-gray-700 rounded-lg shadow-xl animate-in fade-in-0 slide-in-from-top-2 duration-200">
+                <div className="z-50 absolute right-0 mt-2 w-64 bg-gray-900 border border-gray-700 rounded-lg shadow-xl animate-in fade-in-0 slide-in-from-top-2 duration-200">
                   {/* User Info Header */}
                   {/* <div className="px-4 py-3 border-b border-gray-700">
                     <div className="flex items-center space-x-3">
@@ -174,7 +173,7 @@ const AdminNavigation = ({
 
                   {/* Menu Items */}
                   <div className="py-2">
-                    <button
+                    {/* <button
                       onClick={handleProfileClick}
                       className="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 hover:text-[#CDFF00] transition-colors"
                     >
@@ -182,7 +181,7 @@ const AdminNavigation = ({
                       <span>Profile Settings</span>
                     </button>
 
-                    <div className="border-t border-gray-700 my-2"></div>
+                    <div className="border-t border-gray-700 my-2"></div> */}
 
                     <button
                       onClick={handleLogout}

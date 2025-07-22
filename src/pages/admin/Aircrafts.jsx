@@ -16,6 +16,7 @@ const Aircrafts = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
+    const [deleting, setIsDeleting] = useState(false);
 
 
     useEffect(() => {
@@ -51,8 +52,9 @@ const Aircrafts = () => {
     };
 
     const confirmDelete = async (id) => {
+        setIsDeleting(true);
         try {
-            const response = await fetch(`${url}/AirlineAircraft/delete/${id}`, {
+            const response = await fetch(`${url}/AirlineAircraft/delete-aircraft/${id}`, {
                 method: 'DELETE',
             });
 
@@ -69,7 +71,9 @@ const Aircrafts = () => {
             toast.error('Error deleting aircraft');
         }
         finally {
+            setIsDeleting(false);
             setShowConfirmModal(false);
+
 
         }
     };
@@ -189,7 +193,7 @@ const Aircrafts = () => {
                 confirmText={"Confirm"}
                 cancelText="Cancel"
                 type="info"
-                loading={loading}
+                loading={deleting}
             />
         </div>
     );

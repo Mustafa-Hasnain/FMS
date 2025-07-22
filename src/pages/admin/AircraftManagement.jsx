@@ -20,7 +20,6 @@ const AircraftManagement = () => {
         specifications: '',
         capacity: '',
         isActive: true,
-        airlineId: 1, // Default airline ID
         imageFile: null,
         currentImageUrl: ''
     });
@@ -51,7 +50,6 @@ const AircraftManagement = () => {
                     specifications: aircraft.specifications,
                     capacity: aircraft.capacity,
                     isActive: aircraft.isActive,
-                    airlineId: aircraft.airlineId,
                     imageFile: null,
                     currentImageUrl: aircraft.imageUrl
                 });
@@ -133,7 +131,6 @@ const AircraftManagement = () => {
             formDataToSend.append('Specifications', formData.specifications);
             formDataToSend.append('Capacity', formData.capacity);
             formDataToSend.append('IsActive', formData.isActive);
-            formDataToSend.append('AirlineId', formData.airlineId);
 
             if (formData.imageFile) {
                 formDataToSend.append('ImageFile', formData.imageFile);
@@ -234,14 +231,23 @@ const AircraftManagement = () => {
                                 onChange={(e) => handleInputChange('name', e.target.value)}
                                 required
                             />
-                            <CustomInput
-                                label="Aircraft Type"
-                                name="type"
-                                placeholder="e.g., commercial, jet, helicopter"
-                                value={formData.type}
-                                onChange={(e) => handleInputChange('type', e.target.value)}
-                                required
-                            />
+                            <div>
+                                <label className="block text-sm text-gray-300 mb-2 font-inter">
+                                    Aircraft Type *
+                                </label>
+                                <select
+                                    name="type"
+                                    value={formData.type}
+                                    onChange={(e) => handleInputChange('type', e.target.value)}
+                                    className="w-full py-[14px] px-4 bg-gray-800 border border-gray-700 rounded-md text-white focus:ring-2 focus:ring-[#CDFF00] focus:border-[#CDFF00]"
+                                    required
+                                >
+                                    <option value="">Select the Aircraft type</option>
+                                    <option value="plane">Charter    Plane</option>
+                                    <option value="jet">Jet</option>
+                                    <option value="helicopter">Helicopter</option>
+                                </select>
+                            </div>
                         </div>
 
                         {/* Row 2: Capacity and Status */}
@@ -258,7 +264,7 @@ const AircraftManagement = () => {
                             />
 
                             {/* Status Toggle */}
-                            <div>
+                            {/* <div>
                                 <label className="block text-sm text-gray-300 mb-2 font-inter">Status</label>
                                 <div className="flex items-center space-x-4 py-[14px]">
                                     <label className="flex items-center space-x-2 cursor-pointer">
@@ -282,7 +288,7 @@ const AircraftManagement = () => {
                                         <span className="text-red-400">Inactive</span>
                                     </label>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
 
                         {/* Row 3: Specifications */}
