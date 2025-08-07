@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Plane, Save, ArrowLeft } from 'lucide-react';
+import { Plane, Save, ArrowLeft, Trash2 } from 'lucide-react';
 import { url } from '../../utils/url';
 import CustomButton from '../../components/custom/CustomButton';
 import CustomInput from '../../components/custom/CustomInput';
@@ -28,6 +28,7 @@ const AdminFlightManagement = () => {
   });
 
   const [aircrafts, setAircrafts] = useState([]);
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [fetchingFlight, setFetchingFlight] = useState(false);
   const [fetchingAircrafts, setFetchingAircrafts] = useState(false);
@@ -35,7 +36,7 @@ const AdminFlightManagement = () => {
   // Fetch aircrafts on component mount
   useEffect(() => {
     fetchAircrafts();
-    
+
     // If in edit mode, fetch flight data
     if (isEditMode) {
       fetchFlightData();
@@ -47,7 +48,7 @@ const AdminFlightManagement = () => {
     try {
       const response = await fetch(`${url}/AirlineAircraft/GetAircrafts`);
       const result = await response.json();
-      
+
       if (result.success) {
         setAircrafts(result.data || []);
       } else {
@@ -61,12 +62,43 @@ const AdminFlightManagement = () => {
     }
   };
 
+  // const fetchFlightData = async () => {
+  //   setFetchingFlight(true);
+  //   try {
+  //     const response = await fetch(`${url}/Flight/GetFlight/${id}`);
+  //     const result = await response.json();
+
+  //     if (result.success) {
+  //       const flight = result.data;
+  //       setFormData({
+  //         id: flight.id,
+  //         aircraftId: flight.aircraftId,
+  //         fromLocation: flight.fromLocation,
+  //         toLocation: flight.toLocation,
+  //         departureDatetime: flight.departureDatetime ? new Date(flight.departureDatetime).toISOString().slice(0, 16) : '',
+  //         arrivalDatetime: flight.arrivalDatetime ? new Date(flight.arrivalDatetime).toISOString().slice(0, 16) : '',
+  //         seatPrice: flight.seatPrice,
+  //         luggageLimitKg: flight.luggageLimitKg,
+  //         seatsAvailable: flight.seatsAvailable,
+  //         createdByUserId: flight.createdByUserId,
+  //         flightType: flight.flightType
+  //       });
+  //     } else {
+  //       toast.error(result.message || 'Failed to fetch flight data', 'error')
+  //     }
+  //   } catch (err) {
+  //     console.error('Error fetching flight:', err);
+  //     toast.error('Error fetching flight data');
+  //   } finally {
+  //     setFetchingFlight(false);
+  //   }
+  // };
+
   const fetchFlightData = async () => {
     setFetchingFlight(true);
     try {
       const response = await fetch(`${url}/Flight/GetFlight/${id}`);
       const result = await response.json();
-      
       if (result.success) {
         const flight = result.data;
         setFormData({
@@ -74,20 +106,27 @@ const AdminFlightManagement = () => {
           aircraftId: flight.aircraftId,
           fromLocation: flight.fromLocation,
           toLocation: flight.toLocation,
-          departureDatetime: flight.departureDatetime ? new Date(flight.departureDatetime).toISOString().slice(0, 16) : '',
-          arrivalDatetime: flight.arrivalDatetime ? new Date(flight.arrivalDatetime).toISOString().slice(0, 16) : '',
+          departureDatetime: new Date(flight.departureDatetime).toISOString().slice(0, 16),
+          arrivalDatetime: new Date(flight.arrivalDatetime).toISOString().slice(0, 16),
           seatPrice: flight.seatPrice,
-          luggageLimitKg: flight.luggageLimitKg,
+          luggageLimitKg: flight.maxLuggageWeight,
           seatsAvailable: flight.seatsAvailable,
-          createdByUserId: flight.createdByUserId,
+          createdByUserId: 1,
           flightType: flight.flightType
         });
-      } else {
-        toast.error(result.message || 'Failed to fetch flight data', 'error')
-      }
-    } catch (err) {
-      console.error('Error fetching flight:', err);
-      toast.error('Error fetching flight data');
+        setImages(
+          flight.images.map(img => ({
+            file: null,
+            preview: img.imageUrl,
+            description: img.description,
+            isBannerImage: img.isBannerImage,
+            toDelete: false,
+            imageId: img.imageId
+          }))
+        );
+      } else toast.error(result.message || 'Failed to fetch flight');
+    } catch {
+      toast.error('Error fetching flight');
     } finally {
       setFetchingFlight(false);
     }
@@ -100,52 +139,134 @@ const AdminFlightManagement = () => {
     }));
   };
 
+  const handleFileSelect = (e, index) => {
+    const updated = [...images];
+    updated[index].file = e.target.files[0];
+    updated[index].preview = URL.createObjectURL(e.target.files[0]);
+    setImages(updated);
+  };
+
+  const addImageField = () => {
+    setImages([...images, { file: null, preview: '', description: '', isBannerImage: false, toDelete: false }]);
+  };
+
+  // const removeImageField = (index) => {
+  //   setImages(images.filter((_, i) => i !== index));
+  // };
+
+  const removeImageField = (imageId) => {
+    setImages((prevImages) =>
+      prevImages
+        .map((img) => {
+          if (img.imageId === imageId) {
+            return { ...img, toDelete: true }; // Mark existing image for deletion
+          }
+          return img;
+        })
+    );
+  };
+
+  console.log("Images:", images);
+
+
+  const handleImageChange = (index, field, value) => {
+    const updated = [...images];
+    updated[index][field] = value;
+    if (field === 'isBannerImage') {
+      updated.forEach((img, i) => {
+        if (i !== index) img.isBannerImage = false;
+      });
+    }
+    setImages(updated);
+  };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+
+  //   try {
+  //     // Prepare the request body
+  //     const requestBody = {
+  //       aircraftId: parseInt(formData.aircraftId),
+  //       fromLocation: formData.fromLocation,
+  //       toLocation: formData.toLocation,
+  //       departureDatetime: new Date(formData.departureDatetime).toISOString(),
+  //       arrivalDatetime: new Date(formData.arrivalDatetime).toISOString(),
+  //       seatPrice: parseFloat(formData.seatPrice),
+  //       luggageLimitKg: parseInt(formData.luggageLimitKg),
+  //       seatsAvailable: parseInt(formData.seatsAvailable),
+  //       createdByUserId: parseInt(formData.createdByUserId),
+  //       flightType: parseInt(formData.flightType)
+  //     };
+
+  //     if(isEditMode){
+  //       requestBody.id = parseInt(formData.id);
+  //     }
+
+  //     const response = await fetch(`${url}/Flight/upsert`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(requestBody)
+  //     });
+
+  //     const result = await response.json();
+
+  //     if (result.success) {
+  //       toast.success(response?.message || isEditMode ? 'Flight updated successfully!' : 'Flight created successfully!')
+
+  //       // Optionally redirect after success
+  //       setTimeout(() => {
+  //         navigate('/admin/search'); // Adjust this route as needed
+  //       }, 2000);
+  //     } else {
+  //       toast.error(result.message || 'Failed to save flight')
+  //     }
+  //   } catch (err) {
+  //     console.error('Error saving flight:', err);
+  //     toast.error('Error saving flight. Please try again')
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    const form = new FormData();
+    if (isEditMode) form.append('Id', formData.id);
+    form.append('AircraftId', formData.aircraftId);
+    form.append('FromLocation', formData.fromLocation);
+    form.append('ToLocation', formData.toLocation);
+    form.append('DepartureDatetime', new Date(formData.departureDatetime).toISOString());
+    form.append('ArrivalDatetime', new Date(formData.arrivalDatetime).toISOString());
+    form.append('SeatPrice', formData.seatPrice);
+    form.append('LuggageLimitKg', formData.luggageLimitKg);
+    form.append('SeatsAvailable', formData.seatsAvailable);
+    form.append('CreatedByUserId', formData.createdByUserId);
+    form.append('FlightType', formData.flightType);
+
+    images.forEach((img, i) => {
+      if (img.file) form.append(`Images[${i}].ImageFile`, img.file);
+      form.append(`Images[${i}].Description`, img.description);
+      form.append(`Images[${i}].IsBannerImage`, img.isBannerImage);
+      if(img.imageId) form.append(`Images[${i}].ImageId`, img.imageId);
+      form.append(`Images[${i}].toDelete`, img.toDelete);
+    });
 
     try {
-      // Prepare the request body
-      const requestBody = {
-        aircraftId: parseInt(formData.aircraftId),
-        fromLocation: formData.fromLocation,
-        toLocation: formData.toLocation,
-        departureDatetime: new Date(formData.departureDatetime).toISOString(),
-        arrivalDatetime: new Date(formData.arrivalDatetime).toISOString(),
-        seatPrice: parseFloat(formData.seatPrice),
-        luggageLimitKg: parseInt(formData.luggageLimitKg),
-        seatsAvailable: parseInt(formData.seatsAvailable),
-        createdByUserId: parseInt(formData.createdByUserId),
-        flightType: parseInt(formData.flightType)
-      };
-
-      if(isEditMode){
-        requestBody.id = parseInt(formData.id);
-      }
-
       const response = await fetch(`${url}/Flight/upsert`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody)
+        body: form
       });
-
       const result = await response.json();
-
       if (result.success) {
-        toast.success(response?.message || isEditMode ? 'Flight updated successfully!' : 'Flight created successfully!')
-        
-        // Optionally redirect after success
-        setTimeout(() => {
-          navigate('/admin/search'); // Adjust this route as needed
-        }, 2000);
-      } else {
-        toast.error(result.message || 'Failed to save flight')
-      }
-    } catch (err) {
-      console.error('Error saving flight:', err);
-      toast.error('Error saving flight. Please try again')
+        toast.success(result.message || (isEditMode ? 'Flight updated' : 'Flight created'));
+        setTimeout(() => navigate('/admin/search'), 1500);
+      } else toast.error(result.message || 'Failed to save flight');
+    } catch {
+      toast.error('Error saving flight');
     } finally {
       setLoading(false);
     }
@@ -186,14 +307,14 @@ const AdminFlightManagement = () => {
       </div> */}
 
       <AdminNavigation
-                      showBackButton={false}
-                      onBackClick={() => navigate('/admin/aircrafts')}
-                      userInfo={{
-                          name: "Admin User",
-                          email: "admin@jetrique.com",
-                          avatar: null // You can pass a URL here if available
-                      }}
-                  />
+        showBackButton={false}
+        onBackClick={() => navigate('/admin/aircrafts')}
+        userInfo={{
+          name: "Admin User",
+          email: "admin@jetrique.com",
+          avatar: null // You can pass a URL here if available
+        }}
+      />
 
       {/* Main Content */}
       <div className="px-6 py-8">
@@ -210,7 +331,7 @@ const AdminFlightManagement = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="bg-gray-900 rounded-lg p-6 border border-gray-800">
-            
+
             {/* Aircraft Selection */}
             <div className="mb-6">
               <label className="block text-sm text-gray-300 mb-2 font-inter">Aircraft *</label>
@@ -226,7 +347,7 @@ const AdminFlightManagement = () => {
                 </option>
                 {aircrafts.map(aircraft => (
                   <option key={aircraft.id} value={aircraft.id}>
-                    {aircraft.name} (Capacity: {aircraft.capacity})
+                    {aircraft.name}
                   </option>
                 ))}
               </select>
@@ -312,7 +433,7 @@ const AdminFlightManagement = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="flex justify-end space-x-4">
+            {/* <div className="flex justify-end space-x-4">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
@@ -331,13 +452,76 @@ const AdminFlightManagement = () => {
                 loading={loading}
                 onClickText={
                   <div className="flex items-center space-x-2">
-                    {/* <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> */}
                     <span>{isEditMode ? 'Updating...' : 'Creating...'}</span>
                   </div>
                 }
                 className="min-w-[140px]"
               />
+            </div> */}
+
+            {/* Image Upload Section */}
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold mb-2">Flight Images</h3>
+              {images.map((img, index) => (
+                !img?.toDelete && (
+                  <div key={index} className="mb-4 p-4 border rounded-md bg-gray-800 relative">
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 text-red-500"
+                      onClick={() => removeImageField(img?.imageId)}
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileSelect(e, index)}
+                      className="mb-2 block w-full"
+                    />
+                    {img.preview && <img src={img.preview} alt="preview" className="h-32 object-cover rounded mb-2" />}
+                    <textarea
+                      className="w-full p-2 bg-gray-700 text-white rounded mb-2"
+                      placeholder="Image description"
+                      value={img.description}
+                      onChange={(e) => handleImageChange(index, 'description', e.target.value)}
+                    />
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        checked={img.isBannerImage}
+                        onChange={() => handleImageChange(index, 'isBannerImage', !img.isBannerImage)}
+                      />
+                      <span>Set as Banner Image</span>
+                    </label>
+                  </div>
+                )
+              ))}
+              <button
+                type="button"
+                onClick={addImageField}
+                className="text-[#CDFF00] hover:underline"
+              >
+                + Add Another Image
+              </button>
             </div>
+
+            <div className="flex justify-end gap-4">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="px-6 py-3 border border-gray-600 text-gray-400 rounded-md hover:bg-gray-800"
+              >
+                Cancel
+              </button>
+              <CustomButton
+                type="submit"
+                text={<><Save className="h-4 w-4 mr-1" />{isEditMode ? 'Update Flight' : 'Create Flight'}</>}
+                loading={loading}
+                onClickText={<span>{isEditMode ? 'Updating...' : 'Creating...'}</span>}
+                className="min-w-[140px]"
+              />
+            </div>
+
           </form>
         </div>
       </div>

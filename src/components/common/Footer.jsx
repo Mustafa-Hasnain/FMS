@@ -1,60 +1,88 @@
 import React from 'react';
-import { Plane, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Linkedin } from 'lucide-react';
 
 const Footer = () => {
+  const quickLinks = [
+    { name: 'Book a Flight', href: '#' },
+    { name: 'Explore Fleet', href: '#' },
+    { name: 'Become a Member', href: '#' },
+    { name: 'FAQs', href: '#' },
+  ];
+
+  const socialLinks = [
+    { name: 'Facebook', icon: Facebook, href: '#' },
+    { name: 'Instagram', icon: Instagram, href: '#' },
+    { name: 'Linkedin', icon: Linkedin, href: '#' },
+  ];
+
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div className="col-span-1 md:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-2 rounded-lg">
-                <Plane className="h-6 w-6 text-white" />
-              </div>
-              <span className="text-xl font-bold">FlightBook</span>
-            </div>
-            <p className="text-gray-400 mb-4 max-w-md">
-              Your trusted partner for hassle-free flight bookings. Compare prices, 
-              find the best deals, and book your perfect flight with confidence.
-            </p>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center text-gray-400">
-                <Phone className="h-4 w-4 mr-2" />
-                <span>+92-21-1234567</span>
-              </div>
-              <div className="flex items-center text-gray-400">
-                <Mail className="h-4 w-4 mr-2" />
-                <span>support@flightbook.com</span>
-              </div>
+    <footer className="bg-white border-t border-gray-100">
+      {/* Main Footer */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-32">
+          {/* Contact Information */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-6 font-mono">Contact</h3>
+            <div className="space-y-3 text-gray-700">
+              <p className="text-base">
+                021 123 12345 <span className="font-semibold text-gray-900">(24/7)</span>
+              </p>
+              <p className="text-base">Jinnah International Airport</p>
+              <p className="text-base">Karachi, Pakistan</p>
+              <a
+                href="mailto:support@jetrique.com"
+                className="text-blue-600 hover:text-blue-700 transition-colors duration-200 text-base"
+              >
+                support@jetrique.com
+              </a>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-gray-400">
-              <li><a href="/search" className="hover:text-white transition-colors">Search Flights</a></li>
-              <li><a href="/my-bookings" className="hover:text-white transition-colors">My Bookings</a></li>
-              <li><a href="/profile" className="hover:text-white transition-colors">Profile</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Support</h3>
-            <ul className="space-y-2 text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">FAQs</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-            </ul>
+            <h3 className="text-xl font-semibold text-gray-900 mb-6 font-mono">Quick Links</h3>
+            <nav className="space-y-3">
+              {quickLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="block text-blue-600 hover:text-blue-700 transition-colors duration-200 text-base"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </nav>
           </div>
         </div>
+      </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 FlightBook. All rights reserved.</p>
+      {/* Bottom Footer */}
+      <div className="border-t border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            {/* Copyright */}
+            <div className="text-sm text-gray-500">
+              Copyright © 2025 Jetrique | Powered by Jetrique
+            </div>
+
+            {/* Social Links */}
+            <div className="flex items-center space-x-6">
+              {socialLinks.map((social) => {
+                const Icon = social.icon;
+                return (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    className="flex items-center text-gray-700 hover:text-gray-900 transition-colors duration-200 text-sm"
+                    aria-label={social.name}
+                  >
+                    <Icon className="w-4 h-4 mr-2" />
+                    {social.name}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </footer>

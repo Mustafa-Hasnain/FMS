@@ -8,7 +8,7 @@ import { url } from '../../utils/url';
 import { decodeToken } from '../../utils/jwtUtil';
 import { useAuth } from '../../context/AuthContext';
 
-const Login = () => {
+const Login = ({isAdmin = false}) => {
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -134,7 +134,7 @@ const Login = () => {
         </form>
 
         {/* Sign Up Link */}
-        <div className="text-center mt-6">
+        {!isAdmin && <div className="text-center mt-6">
           <p className="text-gray-400 text-sm font-inter">
             Don't have an account?{' '}
             <Link
@@ -144,7 +144,7 @@ const Login = () => {
               Sign up
             </Link>
           </p>
-        </div>
+        </div>}
 
         {/* Demo Accounts */}
         {/* <div className="mt-8 p-4 bg-gray-900/50 rounded-lg border border-gray-700">

@@ -1,14 +1,14 @@
 import React from 'react';
 import { Edit, Trash2, Plane, Users, Calendar } from 'lucide-react';
+import { isAdminRoute } from '../../utils/routeUtil';
+import { useLocation } from 'react-router-dom';
+import { formatDate } from '../../utils/dateUtils';
 
 const AircraftCard = ({ aircraft, onEdit, onDelete }) => {
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
+  const location = useLocation();
+
+
+  const isAdmin = isAdminRoute(location.pathname);
 
   return (
     <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 hover:border-[#CDFF00] transition-all duration-300">
@@ -62,7 +62,7 @@ const AircraftCard = ({ aircraft, onEdit, onDelete }) => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex space-x-3 pt-4">
+        {isAdmin && <div className="flex space-x-3 pt-4">
           <button
             onClick={() => onEdit(aircraft.id)}
             className="border-[1px] border-solid border-blue-500 text-blue-400 px-4 py-2 rounded-md hover:bg-blue-500 hover:text-white transition-all font-medium flex-1 flex items-center justify-center space-x-2"
@@ -77,7 +77,7 @@ const AircraftCard = ({ aircraft, onEdit, onDelete }) => {
             <Trash2 className="h-4 w-4" />
             <span>Delete</span>
           </button>
-        </div>
+        </div>}
       </div>
     </div>
   );

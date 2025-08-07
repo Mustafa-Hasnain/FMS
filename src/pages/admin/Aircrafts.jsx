@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Plane, Plus, AlertCircle, CheckCircle, Search } from 'lucide-react';
 import { url } from '../../utils/url';
 import CustomButton from '../../components/custom/CustomButton';
@@ -7,9 +7,12 @@ import AircraftCard from '../../components/pageComponents/AircraftCard';
 import ConfirmationModal from '../../components/Modals/ConfirmationModal';
 import toast from 'react-hot-toast';
 import AdminNavigation from '../../components/common/AdminNavigation';
+import { isAdminRoute } from '../../utils/routeUtil';
 
 const Aircrafts = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const isAdmin = isAdminRoute(location.pathname);
 
     const [aircrafts, setAircrafts] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -89,7 +92,7 @@ const Aircrafts = () => {
 
             {/* Header Navigation */}
             <AdminNavigation
-                showBackButton={false}
+                showBackButton={true}
                 onBackClick={() => navigate('/admin/aircrafts')}
                 userInfo={{
                     name: "Admin User",
@@ -104,10 +107,10 @@ const Aircrafts = () => {
                     {/* Page Header */}
                     <div className="flex items-center justify-between mb-8 ">
                         <div className='w-full'>
-                            <h1 className="text-2xl font-semibold text-white mb-2">Aircraft Management</h1>
-                            <p className="text-gray-400">Manage your fleet of aircrafts</p>
+                            <h1 className="text-2xl font-semibold text-white mb-2">{isAdmin ? `Aircraft Management`: "Available Aircrafts"}</h1>
+                            <p className="text-gray-400"> {isAdmin ? "Manage your fleet of aircrafts" : "Browse and book from our fleet of private aircraft"}</p>
                         </div>
-                        <CustomButton
+                        {isAdmin && <CustomButton
                             className='min-w-fit max-w-[17%]'
                             text={
                                 <div className="flex items-center space-x-2">
@@ -116,7 +119,7 @@ const Aircrafts = () => {
                                 </div>
                             }
                             onClick={() => navigate('/admin/aircraft-management')}
-                        />
+                        />}
                     </div>
 
                     {/* Search Bar */}

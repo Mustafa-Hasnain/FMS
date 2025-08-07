@@ -20,6 +20,15 @@ const AdminNavigation = ({
   const navLinks = useMemo(() => [
     { path: '/admin/search', label: 'Flights', isActive: location.pathname.includes('/admin/search') },
     { path: '/admin/aircrafts', label: 'Aircraft', isActive: location.pathname.includes('/admin/aircrafts') },
+    { path: '/admin/private-charter', label: 'Charters', isActive: location.pathname.includes('/admin/private-charter') },
+    { path: '/admin/flights-bookings', label: 'Flight Bookings', isActive: location.pathname.includes('/admin/flights-bookings') }
+    
+  ], [location.pathname]);
+
+  const user_navLinks = useMemo(() => [
+    { path: '/', label: 'Flights', isActive: location.pathname === '/' },
+    { path: '/aircrafts', label: 'Aircrafts', isActive: location.pathname.includes('/aircrafts') },
+    { path: '/private-charter-form', label: 'Request Charter', isActive: location.pathname.includes('/private-charter-form') },
   ], [location.pathname]);
 
   // Close profile menu when clicking outside
@@ -80,8 +89,8 @@ const AdminNavigation = ({
 
         {/* Left Section - Logo and Back Button */}
         <div className="flex items-center space-x-8">
-         {showBackButton && <button
-            onClick={()=>navigate(-1)}
+          {showBackButton && <button
+            onClick={() => navigate(-1)}
             className="flex items-center space-x-2 text-gray-400 hover:text-[#CDFF00] transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -89,14 +98,14 @@ const AdminNavigation = ({
           </button>}
           <div className="flex items-center space-x-2">
             <Plane className="h-6 w-6 text-[#CDFF00]" />
-            <span onClick={()=>navigate(isAdmin ? "/admin/search" : "/search")} className="text-xl font-medium font-orbitron text-[#CDFF00] cursor-pointer">Jetrique {isAdmin && "Admin"}</span>
+            <span onClick={() => navigate(isAdmin ? "/admin/search" : "/search")} className="text-xl font-medium font-orbitron text-[#CDFF00] cursor-pointer">Jetrique {isAdmin && "Admin"}</span>
           </div>
 
         </div>
 
         {/* Middle Section - Navigation Links */}
-        {isAdmin && <div className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
+        <div className="hidden md:flex items-center space-x-8">
+          {isAdmin ? navLinks.map((link) => (
             <button
               key={link.path}
               onClick={() => handleNavigation(link.path)}
@@ -107,8 +116,24 @@ const AdminNavigation = ({
             >
               {link.label}
             </button>
-          ))}
-        </div>}
+          ))
+            :
+            (
+              user_navLinks.map((link) => (
+                <button
+                  key={link.path}
+                  onClick={() => handleNavigation(link.path)}
+                  className={`text-sm font-medium transition-colors hover:text-[#CDFF00] ${link.isActive
+                    ? 'text-[#CDFF00] border-b-2 border-[#CDFF00] pb-1'
+                    : 'text-gray-300'
+                    }`}
+                >
+                  {link.label}
+                </button>
+              ))
+            )
+          }
+        </div>
 
         {/* Right Section - Profile Menu */}
         {loading ? (
