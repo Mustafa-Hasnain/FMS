@@ -108,6 +108,13 @@ function App() {
           }
         />
 
+        <Route
+          path="/private-charter-form"
+          element={
+              <PrivateCharterForm />
+          }
+        />
+
 
         {/* <Route
           path="/private-charter-form"
@@ -232,7 +239,7 @@ function App() {
 
 
         {/* Fallback */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/private-charter-form" replace />} />
       </Routes>
     </AuthProvider>
   );

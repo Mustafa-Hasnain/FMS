@@ -254,14 +254,17 @@ const FlightDetails = () => {
             newErrors.email = 'Invalid email format';
         }
         if (!formData.travelDates) newErrors.travelDates = 'Travel date is required';
-        if (!formData.numberOfGuests || parseInt(formData.numberOfGuests) < 1) {
-            newErrors.numberOfGuests = 'At least 1 guest is required';
-        } else if (parseInt(formData.numberOfGuests) > 30) {
+
+        // if (!formData.numberOfGuests || parseInt(formData.numberOfGuests) < 1) {
+        //     newErrors.numberOfGuests = 'At least 1 guest is required';
+        // } else
+
+        if (parseInt(formData.numberOfGuests) > 30) {
             newErrors.numberOfGuests = 'Maximum 30 guests allowed';
         }
-        if (!formData.numberOfRooms || parseInt(formData.numberOfRooms) < 1) {
-            newErrors.numberOfRooms = 'At least 1 room is required';
-        }
+        // if (!formData.numberOfRooms || parseInt(formData.numberOfRooms) < 1) {
+        //     newErrors.numberOfRooms = 'At least 1 room is required';
+        // }
 
         return newErrors;
     };
@@ -276,6 +279,9 @@ const FlightDetails = () => {
             }
             if (!guest.lastName.trim()) {
                 newGuestErrors[`${index}-lastName`] = 'Last name is required';
+            }
+            if (!guest.gender.trim()) {
+                newGuestErrors[`${index}-gender`] = 'Gender is required';
             }
             if (!guest.cnic.trim()) {
                 newGuestErrors[`${index}-cnic`] = 'CNIC is required';
@@ -322,15 +328,16 @@ const FlightDetails = () => {
                 lastName: formData.lastName,
                 phone: formData.phone,
                 departureDate: formData.travelDates,
-                numberOfGuests: parseInt(formData.numberOfGuests),
-                numberOfRooms: parseInt(formData.numberOfRooms),
+                numberOfGuests: parseInt(formData?.numberOfGuests || 0),
+                numberOfRooms: parseInt(formData?.numberOfRooms || 1),
                 note: formData.note || '',
                 flightId: flight.id,
                 travelPersons: guestForms.map(guest => ({
                     firstName: guest.firstName,
                     lastName: guest.lastName,
                     phoneNumber: guest.phone,
-                    cnic: guest.cnic
+                    cnic: guest.cnic,
+                    gender:guest.gender
                 }))
             };
 
@@ -838,8 +845,7 @@ const FlightDetails = () => {
                                     <label className="block text-sm font-medium text-gray-700 mb-3 font-inter">Number of Guests * (Max 30)</label>
                                     <input
                                         type="number"
-                                        min="1"
-                                        max="30"
+                                        defaultValue={0}
                                         value={formData.numberOfGuests}
                                         onChange={(e) => handleFormChange('numberOfGuests', e.target.value)}
                                         className={`w-full px-4 py-3 bg-gray-50 border rounded-lg focus:ring-2 focus:ring-amber-400 focus:border-transparent text-gray-900 font-inter ${errors.numberOfGuests ? 'border-red-500' : 'border-gray-300'}`}
@@ -849,7 +855,7 @@ const FlightDetails = () => {
                                     {errors.numberOfGuests && <p className="mt-2 text-sm text-red-600 font-inter">{errors.numberOfGuests}</p>}
                                 </div>
 
-                                <div>
+                                {/* <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-3 font-inter">Number of Rooms *</label>
                                     <select
                                         value={formData.numberOfRooms}
@@ -863,7 +869,7 @@ const FlightDetails = () => {
                                         ))}
                                     </select>
                                     {errors.numberOfRooms && <p className="mt-2 text-sm text-red-600 font-inter">{errors.numberOfRooms}</p>}
-                                </div>
+                                </div> */}
                             </div>
 
                             <div>
@@ -882,7 +888,7 @@ const FlightDetails = () => {
                                 <div className="border-t border-gray-300 pt-8">
                                     <h3 className="text-2xl font-orbitron font-light text-gray-900 mb-8 flex items-center">
                                         <Users className="w-6 h-6 mr-3 text-amber-600" />
-                                        Guest Information
+                                        Travel Companions
                                     </h3>
 
                                     <div className="space-y-8">
@@ -930,7 +936,7 @@ const FlightDetails = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="grid md:grid-cols-2 gap-4">
+                                                <div className="grid md:grid-cols-2 gap-4 mb-4">
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-600 mb-2 font-inter">CNIC *</label>
                                                         <input
@@ -965,6 +971,24 @@ const FlightDetails = () => {
                                                         </div>
                                                         {guestErrors[`${index}-phone`] && (
                                                             <p className="mt-1 text-sm text-red-600 font-inter">{guestErrors[`${index}-phone`]}</p>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <div className="grid md:grid-cols-2 gap-4 mb-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-600 mb-2 font-inter">Gender *</label>
+                                                        <select
+                                                            value={guest.gender}
+                                                            onChange={(e) => handleGuestFormChange(index, 'gender', e.target.value)}
+                                                            className={`w-full px-3 py-2 bg-white border rounded-lg focus:ring-2 focus:ring-amber-400 focus:border-transparent text-gray-900 font-inter ${guestErrors[`${index}-gender`] ? 'border-red-500' : 'border-gray-300'}`}
+                                                            required
+                                                        >
+                                                            <option value="">Select Gender</option>
+                                                            <option value="male">Male</option>
+                                                            <option value="female">Female</option>
+                                                        </select>
+                                                        {guestErrors[`${index}-gender`] && (
+                                                            <p className="mt-1 text-sm text-red-600 font-inter">{guestErrors[`${index}-gender`]}</p>
                                                         )}
                                                     </div>
                                                 </div>

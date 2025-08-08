@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { 
-    Plane, 
-    ArrowLeft, 
-    User, 
-    Mail, 
-    Phone, 
-    CreditCard, 
+import {
+    Plane,
+    ArrowLeft,
+    User,
+    Mail,
+    Phone,
+    CreditCard,
     Clock,
     AlertCircle,
     CheckCircle,
@@ -26,7 +26,7 @@ import { url } from '../../utils/url';
 const FlightBookingDetails = () => {
     const navigate = useNavigate();
     const { id } = useParams();
-    
+
     const [booking, setBooking] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -61,10 +61,11 @@ const FlightBookingDetails = () => {
 
     const getFlightTypeLabel = (flightType) => {
         const types = {
-            0: 'Domestic',
-            1: 'International'
+            0: 'Jet',
+            1: 'Plane',
+            2: 'Helicopter'
         };
-        return types[flightType] || 'Unknown';
+        return types[flightType] || 'Jet';
     };
 
     const formatDate = (dateString) => {
@@ -191,7 +192,7 @@ const FlightBookingDetails = () => {
                                     <User className="h-5 w-5 text-[#CDFF00]" />
                                     <span>Primary Passenger</span>
                                 </h2>
-                                
+
                                 <div className="space-y-4">
                                     <div>
                                         <label className="text-sm text-gray-400">Full Name</label>
@@ -202,7 +203,7 @@ const FlightBookingDetails = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                     <div>
                                         <label className="text-sm text-gray-400">Phone Number</label>
                                         <div className="flex items-center space-x-3 mt-1">

@@ -56,7 +56,7 @@ const FlightProducts = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br  flex items-center justify-center p-4">
         <div className="text-center">
           <div className="relative w-16 h-16 mx-auto mb-4">
             <div className="absolute inset-0 border-4 border-blue-200 rounded-full"></div>
@@ -71,7 +71,7 @@ const FlightProducts = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br  flex items-center justify-center p-4">
         <div className="text-center bg-white rounded-lg shadow-lg p-8">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Plane className="w-8 h-8 text-red-600" />
@@ -85,7 +85,7 @@ const FlightProducts = () => {
 
   if (flights.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br  flex items-center justify-center p-4">
         <div className="text-center bg-white rounded-lg shadow-lg p-8">
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Plane className="w-8 h-8 text-gray-600" />
@@ -98,7 +98,7 @@ const FlightProducts = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">Premium Flight Collection</h1>
@@ -109,7 +109,7 @@ const FlightProducts = () => {
           {flights.map((flight) => {
             const displayImage = getDisplayImage(flight.images);
             return (
-              <div key={flight.id} className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+              <div key={flight.id} onClick={() => window.open(`https://jetrique.com/lets-go-booking/?id=${flight.id}`, '_blank')} className="group bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
                 <div className="relative h-64 overflow-hidden">
                   <img
                     src={displayImage.imageUrl}
