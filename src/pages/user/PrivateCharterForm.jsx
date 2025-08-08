@@ -725,7 +725,7 @@ const PrivateCharterForm = () => {
     // );
 
     return (
-        <div className="bg-transparent min-h-screen p-4">
+        <div>
             <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
                 {/* Header with Trip Type Buttons */}
                 <div className="bg-gray-100 p-4 rounded-t-lg border-b">
